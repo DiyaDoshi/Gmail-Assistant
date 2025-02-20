@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail AI Reply",
+  "version": "1.0",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage",
+    "notifications",
+    "offscreen",
+    "windows"
+  ],
+  "host_permissions": [
+    "https://mail.google.com/*",
+    "http://127.0.0.1:8000/"
+  ],
+  "background": {
+    "service_worker": "background2.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content2.js"],
+      "all_frames": true,
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["popup.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+
+ 
+}
+
+  
+  
+
+  
