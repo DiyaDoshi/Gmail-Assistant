@@ -54,13 +54,24 @@ class Message(BaseModel):
 class Conversation(BaseModel):
     messages: list[Message] = []
 
-# Add this global variable after other initializations
+# Add this class after other BaseModel definitions
+class EmailContext(BaseModel):
+    content: str
+    processed: bool = False
+
+# Add these global variables after other initializations
 conversation_memory = Conversation()
+current_email = None  # Will store the EmailContext
 
 @app.api_route("/", methods=["GET", "POST"])
 async def chat_response(data: ChatRequest):
+    global current_email
     print("📩 Received email text:", data.message)
 
+    # If this looks like an email (contains common email markers), store it as current email
+    if any(marker in data.message.lower() for marker in ["subject:", "from:", "to:", "@"]):
+        current_email = EmailContext(content=data.message)
+    
     # Add user message to conversation history
     conversation_memory.messages.append(
         Message(role="user", content=data.message)
@@ -76,36 +87,35 @@ async def chat_response(data: ChatRequest):
     docs = retriever.invoke(data.message)
     knowledge = "\n\n".join(doc.page_content for doc in docs)
 
+    # Modified prompt to include email context
     rag_prompt = f"""
-    You are a specialized Gmail Assistant. You must only respond to email-related queries and reject any unrelated questions.
-    Here are some examples of how you should respond:
+    You are a specialized Gmail Assistant. When a user first shares an email with you, you must:
+    1. First ask them what they would like to do with the email (summarize, draft a reply, suggest actions, or analyze)
+    2. Wait for their choice before providing the specific assistance they requested
 
-    Example 1:
-    User: "How do I schedule an email in Gmail?"
-    Assistant: "To schedule an email in Gmail, compose your email, click the dropdown arrow next to 'Send,' and select 'Schedule send.'"
+    Current Email Being Discussed:
+    {current_email.content if current_email else "No email currently in context"}
 
-    Example 2:
-    User: "What's the best way to organize my Gmail inbox?"
-    Assistant: "You can use labels, filters, and the priority inbox feature to organize your Gmail inbox efficiently."
-
-    Example 3:
-    User: "Tell me a joke."
-    Assistant: "I am a Gmail Assistant and can only assist with email-related queries."
-
-    Example 4:
-    User: "Why is the sky blue?"
-    Assistant: "I am a Gmail Assistant and can only answer email-related queries."
-
-    Now, answer the following email-related question:
+    When asked to draft a reply:
+    - Generate ONE concise and appropriate reply
+    - Keep it professional but friendly
+    - Don't provide multiple options
+    
+    When asked to summarize:
+    - Provide a brief, clear summary of the email content
+    - Include key points and any action items
 
     Previous Conversation:
     {conversation_context}
 
-    Current Email Content:
+    Current User Message:
     {data.message}
 
     Relevant Knowledge:
     {knowledge}
+
+    If this is the first message about this email, ask the user what they would like you to do with it.
+    If there's no email in context and the user asks for email-related tasks, ask them to share the email first.
     """
 
     response = ""
@@ -127,5 +137,8 @@ async def chat_response(data: ChatRequest):
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
+
+
+
 
 
