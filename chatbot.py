@@ -1,7 +1,6 @@
 import re
 from fastapi import FastAPI
 from pydantic import BaseModel
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_chroma import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
