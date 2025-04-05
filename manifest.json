@@ -31,7 +31,7 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["popup.html"],
+      "resources": ["popup.html", "icons/gmail.svg"],
       "matches": ["<all_urls>"]
     }
   ]
