@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # CORS configuration
-origins = ["http://127.0.0.1:8000", "chrome-extension://kaamofllcbjfinmfcdolbidpohkmeddh"]
+origins = ["https://gmail-assistant.onrender.com", "chrome-extension://kaamofllcbjfinmfcdolbidpohkmeddh"]
 
 app.add_middleware(
     CORSMiddleware,
