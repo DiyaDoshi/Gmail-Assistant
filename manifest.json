@@ -5,14 +5,10 @@
   "permissions": [
     "scripting",
     "activeTab",
-    "storage",
-    "notifications",
-    "offscreen",
-    "windows"
+    "storage"
   ],
   "host_permissions": [
     "https://mail.google.com/*",
-    "http://127.0.0.1:8000/"
   ],
   "background": {
     "service_worker": "background2.js"
