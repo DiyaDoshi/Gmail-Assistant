@@ -29,7 +29,7 @@ async function sendToChatbot(emailContent) {
     
     // const proxyUrl = '"https://localhost.workers.dev"';
     try {
-        const response = await fetch("https://gmail-assistant.onrender.com", {
+        const response = await fetch("https://gmail-assistant.onrender.com/", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
