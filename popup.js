@@ -16,7 +16,7 @@ const sendMessage = async () => {
 
     // Send message to backend
     try {
-        const response = await fetch('https://gmail-assistant.onrender.com', {
+        const response = await fetch('https://gmail-assistant.onrender.com/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
