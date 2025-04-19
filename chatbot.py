@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # CORS configuration
-origins = ["https://gmail-assistant.onrender.com", "chrome-extension://kaamofllcbjfinmfcdolbidpohkmeddh"]
+# origins = ["https://gmail-assistant.onrender.com", "chrome-extension://kaamofllcbjfinmfcdolbidpohkmeddh"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -62,7 +62,7 @@ class EmailContext(BaseModel):
 conversation_memory = Conversation()
 current_email = None  # Will store the EmailContext
 
-@app.api_route("https://gmail-assistant.onrender.com/", methods=["GET", "POST"])
+@app.api_route("/", methods=["GET", "POST"])
 async def chat_response(data: ChatRequest):
     global current_email
     print("📩 Received email text:", data.message)
